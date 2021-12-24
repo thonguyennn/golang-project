@@ -13,24 +13,32 @@ import (
 
 func GetPeopleBySalary(response http.ResponseWriter, request *http.Request) {
 	response.Header().Set("content-type", "application/json")
-	// Get average salary all person in one month
-	// clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
-	// client, _ := mongo.Connect(context.TODO(), clientOptions)
-	// c := client.Database("example").Collection("people")
 	fromDate := time.Date(2021, time.May, 1, 0, 0, 0, 0, time.UTC)
-	toDate := time.Date(2021, time.June, 1, 23, 59, 59, 0, time.UTC)
+	toDate := time.Date(2021, time.June, 1, 0, 0, 0, 0, time.UTC)
 	pipe := []bson.M{
 		{"$match": bson.M{
 			"dob": bson.M{
 				"$gte": fromDate,
-				"$lt":  toDate,
+				"$lte": toDate,
 			},
 		}},
 		{"$group": bson.M{
-			"_id":   "",
+			// Trong 7 ngày
+			// "_id": bson.M{
+			// 	"month": bson.M{"$month": "$dob"},
+			// 	"day":   bson.M{"$dayOfMonth": "$dob"},
+			// },
+
+			// Trong 1 ngày
+			"_id": bson.M{
+				"hour": bson.M{"$hour": "$dob"},
+			},
 			"count": bson.M{"$sum": 1},
-			"sum":   bson.M{"$sum": "$salary"},
 			"avg":   bson.M{"$avg": "$salary"},
+			"sum":   bson.M{"$sum": "$salary"},
+		}},
+		{"$sort": bson.M{
+			"avg": 1,
 		}},
 	}
 	cursor, err := routes.ConnectDB().Aggregate(context.TODO(), pipe)
