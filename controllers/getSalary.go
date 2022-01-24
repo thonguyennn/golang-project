@@ -38,7 +38,7 @@ func GetPeopleBySalary(response http.ResponseWriter, request *http.Request) {
 			"sum":   bson.M{"$sum": "$salary"},
 		}},
 		{"$sort": bson.M{
-			"avg": 1,
+			"_id": 1,
 		}},
 	}
 	cursor, err := routes.ConnectDB().Aggregate(context.TODO(), pipe)
