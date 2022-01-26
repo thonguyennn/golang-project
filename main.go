@@ -18,7 +18,7 @@ func main() {
 	router.HandleFunc("/people/salary", controllers.GetPeopleBySalary).Methods("GET")
 	router.HandleFunc("/people/{id}", controllers.GetPeopleById).Methods("GET")
 	router.HandleFunc("/people", controllers.CreatePeople).Methods("POST")
-	router.HandleFunc("/people/{id}", controllers.UpdatePeople).Methods("PUT")
-	router.HandleFunc("/people/{id}", controllers.DeletePeople).Methods("DELETE")
+	router.HandleFunc("/people/update/{id}", controllers.UpdatePeople).Methods("PUT")
+	router.HandleFunc("/people/delete/{id}", controllers.DeletePeople).Methods("DELETE")
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
